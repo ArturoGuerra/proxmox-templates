@@ -1,0 +1,59 @@
+# VM Template Configuration
+
+# --- Identification ---
+vm_id: 15000
+name: "almalinux-10-cloud-template"
+description: "AlmaLinux 10 Cloud Image Template (Created via Terraform)"
+tags: ["template", "almalinux", "10", "cloud"]
+node_name: "starkiller"
+datastore_id: "local"
+
+# --- Source Image ---
+url: "https://repo.almalinux.org/almalinux/10/cloud/x86_64_v2/images/AlmaLinux-10-GenericCloud-latest.x86_64_v2.qcow2"
+file_name: "almalinux-10-cloudimg.qcow2"
+verify: false
+content_type: "import"
+
+# --- Hardware ---
+machine: "q35"
+bios: "ovmf"
+
+cpu:
+    cores: 2
+    type: "x86-64-v2-AES"
+memory:
+    dedicated: 2048
+disk_size: 10
+disk_info:
+    interface: "scsi0"
+    ssd: true
+    discard: "on"
+    iothread: true
+
+# --- Cloud-Init ---
+user_account:
+    username: "almalinux"
+    keys:
+        [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMk34Xd7Tfev75s7l78KaQoaASNRSFidnMEZ1jmFPh8e ar2roguerra@gmail.com",
+        ]
+
+ip_configs:
+    - ipv4:
+          address: "dhcp"
+
+# --- Network ---
+network_devices:
+    - bridge: "Server"
+      model: "virtio"
+      firewall: false
+
+# --- OS Type ---
+operating_system:
+    type: "l26" # Linux 2.6+
+
+# --- Serial Console (for cloud images) ---
+serial_devices:
+    - device: "socket"
+vga:
+    type: "serial0"
