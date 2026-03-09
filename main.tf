@@ -75,7 +75,11 @@ module "vm_templates" {
   # --- Cloud-Init ---
   ip_configs   = try(each.value.ip_configs, [])
   dns          = try(each.value.dns, null)
-  user_account = try(each.value.user_account, null)
+  user_account = try(each.value.user_account, null) != null ? {
+    username = try(each.value.user_account.username, null)
+    password = try(var.vm_passwords[each.key], null)
+    keys     = try(each.value.user_account.keys, null)
+  } : null
 
   image_datastore_id = try(each.value.image_datastore_id, null)
   init_datastore_id  = try(each.value.init_datastore_id, null)

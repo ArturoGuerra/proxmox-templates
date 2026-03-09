@@ -12,3 +12,10 @@ variable "datastore_id" {
   type        = string
   default     = "local-lvm"
 }
+
+variable "vm_passwords" {
+  description = "Map of template key to cloud-init user password. Keys match template filenames without .yaml (e.g. ubuntu-24.04-lts). Never commit values — use secrets.auto.tfvars."
+  type        = map(string)
+  default     = {}
+  sensitive   = true
+}
