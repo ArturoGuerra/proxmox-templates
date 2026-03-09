@@ -77,6 +77,14 @@ module "vm_templates" {
   dns          = try(each.value.dns, null)
   user_account = try(each.value.user_account, null)
 
+  image_datastore_id = try(each.value.image_datastore_id, null)
+  init_datastore_id  = try(each.value.init_datastore_id, null)
+
+  user_data_file    = try(each.value.user_data_file, null)
+  vendor_data_file  = try(each.value.vendor_data_file, null)
+  meta_data_file    = try(each.value.meta_data_file, null)
+  network_data_file = try(each.value.network_data_file, null)
+
   # --- Agent ---
   agent = try(each.value.agent, {
     enabled = true

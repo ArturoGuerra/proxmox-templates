@@ -31,11 +31,13 @@ disk_info:
     iothread: true
 
 # --- Cloud-Init ---
+vendor_data_file: "cloud-init/rhel/vendor-data.yaml"
+
 user_account:
     username: "rocky"
     keys:
         [
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOB4XiFSBPJISAk5qg907BZF9dFm1lEwQ94r88DEKF5o",
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOB4XiFSBPJISAk5qg907BZF9dFm1lEwQ94r88DEKF5o proxmox-vms",
         ]
 
 ip_configs:

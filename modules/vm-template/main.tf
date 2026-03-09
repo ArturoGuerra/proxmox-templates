@@ -1,6 +1,65 @@
+locals {
+  image_datastore_id = coalesce(var.image_datastore_id, var.datastore_id)
+  init_datastore_id  = coalesce(var.init_datastore_id, var.datastore_id)
+
+  vendor_data_content = var.vendor_data_file != null ? file("${path.root}/${var.vendor_data_file}") : null
+
+  user_data_content    = var.user_data_file != null ? file("${path.root}/${var.user_data_file}") : null
+  meta_data_content    = var.meta_data_file != null ? file("${path.root}/${var.meta_data_file}") : null
+  network_data_content = var.network_data_file != null ? file("${path.root}/${var.network_data_file}") : null
+}
+
+resource "proxmox_virtual_environment_file" "user_data" {
+  count        = local.user_data_content != null ? 1 : 0
+  node_name    = var.node_name
+  datastore_id = local.init_datastore_id
+  content_type = "snippets"
+
+  source_raw {
+    file_name = "${var.name}-user-data.yaml"
+    data      = local.user_data_content
+  }
+}
+
+resource "proxmox_virtual_environment_file" "vendor_data" {
+  count        = local.vendor_data_content != null ? 1 : 0
+  node_name    = var.node_name
+  datastore_id = local.init_datastore_id
+  content_type = "snippets"
+
+  source_raw {
+    file_name = "${var.name}-vendor-data.yaml"
+    data      = local.vendor_data_content
+  }
+}
+
+resource "proxmox_virtual_environment_file" "meta_data" {
+  count        = local.meta_data_content != null ? 1 : 0
+  node_name    = var.node_name
+  datastore_id = local.init_datastore_id
+  content_type = "snippets"
+
+  source_raw {
+    file_name = "${var.name}-meta-data.yaml"
+    data      = local.meta_data_content
+  }
+}
+
+resource "proxmox_virtual_environment_file" "network_data" {
+  count        = local.network_data_content != null ? 1 : 0
+  node_name    = var.node_name
+  datastore_id = local.init_datastore_id
+  content_type = "snippets"
+
+  source_raw {
+    file_name = "${var.name}-network-data.yaml"
+    data      = local.network_data_content
+  }
+}
+
 resource "proxmox_virtual_environment_download_file" "this" {
   content_type            = var.content_type
-  datastore_id            = var.datastore_id
+  datastore_id            = local.image_datastore_id
   node_name               = var.node_name
   overwrite               = var.overwrite
   verify                  = var.verify
@@ -60,6 +119,11 @@ resource "proxmox_virtual_environment_vm" "this" {
   # cloud-init
   initialization {
     datastore_id = var.datastore_id
+
+    user_data_file_id    = local.user_data_content != null ? proxmox_virtual_environment_file.user_data[0].id : null
+    vendor_data_file_id  = local.vendor_data_content != null ? proxmox_virtual_environment_file.vendor_data[0].id : null
+    meta_data_file_id    = local.meta_data_content != null ? proxmox_virtual_environment_file.meta_data[0].id : null
+    network_data_file_id = local.network_data_content != null ? proxmox_virtual_environment_file.network_data[0].id : null
 
     dynamic "ip_config" {
       for_each = var.ip_configs

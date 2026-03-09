@@ -150,7 +150,36 @@ variable "cpu" {
   })
   default = {
     cores = 2
-    type  = "x86-64-v2-AES"
+    type  = "x86-64-v2-AES" # recommended; provider default is kvm64
+  }
+  validation {
+    condition = contains([
+      "486",
+      "Broadwell", "Broadwell-IBRS", "Broadwell-noTSX", "Broadwell-noTSX-IBRS",
+      "Cascadelake-Server", "Cascadelake-Server-noTSX", "Cascadelake-Server-v2", "Cascadelake-Server-v4", "Cascadelake-Server-v5",
+      "Conroe",
+      "Cooperlake", "Cooperlake-v2",
+      "EPYC", "EPYC-Genoa", "EPYC-IBPB", "EPYC-Milan", "EPYC-Rome", "EPYC-Rome-v2", "EPYC-Rome-v3", "EPYC-Rome-v4", "EPYC-v3", "EPYC-v4",
+      "Haswell", "Haswell-IBRS", "Haswell-noTSX", "Haswell-noTSX-IBRS",
+      "Icelake-Client", "Icelake-Client-noTSX",
+      "Icelake-Server", "Icelake-Server-noTSX", "Icelake-Server-v3", "Icelake-Server-v4", "Icelake-Server-v5", "Icelake-Server-v6",
+      "IvyBridge", "IvyBridge-IBRS",
+      "KnightsMill",
+      "Nehalem", "Nehalem-IBRS",
+      "Opteron_G1", "Opteron_G2", "Opteron_G3", "Opteron_G4", "Opteron_G5",
+      "Penryn",
+      "SandyBridge", "SandyBridge-IBRS",
+      "SapphireRapids",
+      "Skylake-Client", "Skylake-Client-IBRS", "Skylake-Client-noTSX-IBRS", "Skylake-Client-v4",
+      "Skylake-Server", "Skylake-Server-IBRS", "Skylake-Server-noTSX-IBRS", "Skylake-Server-v4", "Skylake-Server-v5",
+      "Westmere", "Westmere-IBRS",
+      "athlon", "core2duo", "coreduo",
+      "host", "kvm32", "kvm64", "max",
+      "pentium", "pentium2", "pentium3", "phenom",
+      "qemu32", "qemu64",
+      "x86-64-v2", "x86-64-v2-AES", "x86-64-v3", "x86-64-v4",
+    ], var.cpu.type) || startswith(var.cpu.type, "custom-")
+    error_message = "cpu.type must be a valid Proxmox CPU model (e.g. x86-64-v2-AES, host, kvm64) or a custom model prefixed with 'custom-'."
   }
 }
 
@@ -283,6 +312,52 @@ variable "disk_info" {
     discard   = "on"
     ssd       = true
   }
+}
+
+# --- Datastore Overrides ---
+
+variable "image_datastore_id" {
+  description = "Datastore for downloaded images. Falls back to datastore_id if null."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "init_datastore_id" {
+  description = "Datastore for cloud-init snippets. Falls back to datastore_id if null."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+# --- Cloud-Init Data Files ---
+
+variable "user_data_file" {
+  description = "Local file path (relative to root module) to upload as cloud-init user-data."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "vendor_data_file" {
+  description = "Local file path (relative to root module) to upload as cloud-init vendor-data. Use packages instead for simple package installs."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "meta_data_file" {
+  description = "Local file path (relative to root module) to upload as cloud-init meta-data."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "network_data_file" {
+  description = "Local file path (relative to root module) to upload as cloud-init network-data."
+  type        = string
+  default     = null
+  nullable    = true
 }
 
 # --- Agent ---

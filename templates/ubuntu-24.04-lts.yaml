@@ -31,12 +31,13 @@ disk_info:
     iothread: true
 
 # --- Cloud-Init ---
+vendor_data_file: "cloud-init/ubuntu/vendor-data.yaml"
+
 user_account:
     username: "ubuntu"
     keys:
         [
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOB4XiFSBPJISAk5qg907BZF9dFm1lEwQ94r88DEKF5o",
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMk34Xd7Tfev75s7l78KaQoaASNRSFidnMEZ1jmFPh8e ar2roguerra@gmail.com",
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOB4XiFSBPJISAk5qg907BZF9dFm1lEwQ94r88DEKF5o proxmox-vms",
         ]
 
 ip_configs:
