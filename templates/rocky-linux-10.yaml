@@ -1,0 +1,59 @@
+# VM Template Configuration
+
+# --- Identification ---
+vm_id: 11000
+name: "rocky-linux-10-cloud-template"
+description: "Rocky Linux 10 Cloud Image Template (Created via Terraform)"
+tags: ["template", "rocky", "10", "rocky-10", "cloud"]
+node_name: "starkiller"
+datastore_id: "local" # CHANGE THIS to your storage ID (e.g., local-lvm, ceph)
+
+# --- Source Image ---
+url: "https://dl.rockylinux.org/pub/rocky/10.1/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2"
+file_name: "rocky-linux-10-cloudimg.qcow2"
+verify: false
+content_type: "import"
+
+# --- Hardware ---
+machine: "q35"
+bios: "ovmf"
+
+cpu:
+    cores: 2
+    type: "x86-64-v2-AES"
+memory:
+    dedicated: 2048
+disk_size: 10
+disk_info:
+    interface: "scsi0"
+    ssd: true
+    discard: "on"
+    iothread: true
+
+# --- Cloud-Init ---
+user_account:
+    username: "rocky"
+    keys:
+        [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOB4XiFSBPJISAk5qg907BZF9dFm1lEwQ94r88DEKF5o",
+        ]
+
+ip_configs:
+    - ipv4:
+          address: "dhcp"
+
+# --- Network ---
+network_devices:
+    - bridge: "Server"
+      model: "virtio"
+      firewall: false
+
+# --- OS Type ---
+operating_system:
+    type: "l26" # Linux 2.6+
+
+# --- Serial Console (for cloud images) ---
+serial_devices:
+    - device: "socket"
+vga:
+    type: "serial0"

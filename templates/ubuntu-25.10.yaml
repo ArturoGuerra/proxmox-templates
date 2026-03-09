@@ -1,0 +1,59 @@
+# VM Template Configuration
+
+# --- Identification ---
+vm_id: 10001
+name: "ubuntu-25.10-cloud-template"
+description: "Ubuntu 25.10 Cloud Image Template (Created via Terraform)"
+tags: ["template", "ubuntu", "25.10", "ubuntu-25.10", "cloud"]
+node_name: "starkiller"
+datastore_id: "local"
+
+# --- Source Image ---
+url: "https://cloud-images.ubuntu.com/releases/questing/release/ubuntu-25.10-server-cloudimg-amd64.img"
+file_name: "ubuntu-25.10-cloudimg.qcow2"
+verify: false
+content_type: "import"
+
+# --- Hardware ---
+machine: "q35"
+bios: "ovmf"
+
+cpu:
+    cores: 2
+    type: "x86-64-v2-AES"
+memory:
+    dedicated: 2048
+disk_size: 10
+disk_info:
+    interface: "scsi0"
+    ssd: true
+    discard: "on"
+    iothread: true
+
+# --- Cloud-Init ---
+user_account:
+    username: "ubuntu"
+    keys:
+        [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMk34Xd7Tfev75s7l78KaQoaASNRSFidnMEZ1jmFPh8e ar2roguerra@gmail.com",
+        ]
+
+ip_configs:
+    - ipv4:
+          address: "dhcp"
+
+# --- Network ---
+network_devices:
+    - bridge: "Server"
+      model: "virtio"
+      firewall: false
+
+# --- OS Type ---
+operating_system:
+    type: "l26" # Linux 2.6+
+
+# --- Serial Console (for cloud images) ---
+serial_devices:
+    - device: "socket"
+vga:
+    type: "serial0"
